@@ -7,7 +7,7 @@ namespace Training
 {
     public class GEPlayer : GameEntity
     {
-        
+        AnimatorStateInfo m_Stateinfo;
         // Use this for initialization
         void Start()
         {
@@ -25,23 +25,27 @@ namespace Training
             float v = CrossPlatformInputManager.GetAxis("Vertical");
             if (h != 0 || v != 0)
             {
-                m_FSM.ChangeState("run");
-                object[] param = new object[2] { h, v };
-                m_FSM.Excute(param);
+                m_Stateinfo = m_Animator.GetCurrentAnimatorStateInfo(0);
+                if (!m_Stateinfo.IsName("Base Layer.Attack1") 
+                    && !m_Stateinfo.IsName("Base Layer.Attack2")
+                    && !m_Stateinfo.IsName("Base Layer.Attack3"))
+                {
+                    m_FSM.ChangeState("run");
+                    object[] param = new object[2] { h, v };
+                    m_FSM.Excute(param);
+                }
             }
             else
             {
-                m_FSM.ChangeState("idle");
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    m_FSM.ChangeState("attack");
+                }
+                else
+                {
+                    m_FSM.ChangeState("idle");
+                }
             }
-
-            //if (Input.GetButtonDown("Fire1"))
-            //{
-            //    m_FSM.ChangeState("attack");
-            //}
-            //else
-            //{
-            //    m_FSM.ChangeState("idle");
-            //}
         }
 
 
