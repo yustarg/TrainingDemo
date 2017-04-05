@@ -41,6 +41,11 @@ namespace Training
             }
         }
 
+        public bool IsInState(string name)
+        {
+            return m_CurState.Name == name;
+        }
+
         public void Init(string name)
         {
             if (m_States.ContainsKey(name))

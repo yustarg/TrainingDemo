@@ -7,23 +7,65 @@ namespace Training
 {
     public class GEPlayer : GameEntity
     {
-        AnimatorStateInfo m_Stateinfo;
+        private const string IDLE = "idle";
+        private const string RUN = "run";
+        private const string ATTACK = "attack";
         private Transform m_MainCam;
         private Transform m_Target;
         private Vector3 m_Dir;
         private Vector3 m_Right;
         private bool m_IsFirstInput;
+        private bool m_IsAutoChasing;
+        private GameObject m_EnemyTarget;
+
         // Use this for initialization
         void Start()
         {
-            m_Animator = GetComponent<Animator>();
+            m_Animation = GetComponent<Animation>();
             m_MainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-            m_Target = GameObject.FindGameObjectWithTag("Player").transform; m_FSM = new StateMachine();
-            m_FSM.AddState("idle", new Idle(this));
-            m_FSM.AddState("run", new Run(this));
-            m_FSM.AddState("attack", new Attack(this));
-            m_FSM.Init("idle");
+            m_Target = GameObject.FindGameObjectWithTag("Player").transform; 
+            m_FSM = new StateMachine();
+            m_FSM.AddState(IDLE, new Idle(this, IDLE));
+            m_FSM.AddState(RUN, new Run(this, RUN));
+            m_FSM.AddState(ATTACK, new Attack(this, ATTACK));
+            m_FSM.Init(IDLE);
             m_IsFirstInput = true;
+
+            this.InitData();
+        }
+
+        void OnEnable()
+        {
+            EasyTouch.On_SimpleTap += On_SimpleTap;
+        }
+
+        void OnDisable()
+        {
+            UnsubscribeEvent();
+        }
+
+        void UnsubscribeEvent()
+        {
+            EasyTouch.On_SimpleTap -= On_SimpleTap;
+        }
+
+        private void On_SimpleTap(Gesture gesture)
+        {
+            if (!m_FSM.IsInState(ATTACK))
+            {
+                m_FSM.ChangeState(ATTACK);
+                RaycastHit hit;
+                Ray ray = new Ray(transform.position, transform.forward);
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.transform.tag == "Enemy")
+                    {
+                        GameEntity ge = hit.transform.GetComponent<GameEntity>();
+                        Attack(ge);
+                    }
+                }
+                m_FSM.Excute();
+            }
         }
 
         void Update()
@@ -32,12 +74,9 @@ namespace Training
             float v = CrossPlatformInputManager.GetAxis("Vertical");
             if (h != 0 || v != 0)
             {
-                m_Stateinfo = m_Animator.GetCurrentAnimatorStateInfo(0);
-                if (!m_Stateinfo.IsName("Base Layer.Attack1") 
-                    && !m_Stateinfo.IsName("Base Layer.Attack2")
-                    && !m_Stateinfo.IsName("Base Layer.Attack3"))
-                {    
-                    m_FSM.ChangeState("run");
+                if (IsNotPlayingAttackAnim())
+                {
+                    m_FSM.ChangeState(RUN);
                     if (m_IsFirstInput)
                     {
                         m_Dir = m_Target.position - m_MainCam.position;
@@ -48,20 +87,75 @@ namespace Training
                     m_FSM.Excute(param);
                 }
             }
+            else if (m_IsAutoChasing)
+            {
+                float distance = Vector3.Distance(m_EnemyTarget.transform.position, m_Target.transform.position);
+                if (distance <= AtkDistance)
+                {
+                    if (IsNotPlayingAttackAnim())
+                    {
+                        m_FSM.ChangeState(ATTACK);                    
+                    }
+                    //m_IsAutoChasing = false;
+                }
+                else 
+                {
+                    m_FSM.ChangeState(RUN);
+                    m_Dir = m_EnemyTarget.transform.position - m_Target.position;
+                    object[] param = new object[1] { new Vector3(m_Dir.x, 0, m_Dir.z) };
+                    m_FSM.Excute(param);
+                }     
+            }
             else
             {
                 m_IsFirstInput = true;
-                if (Input.GetButtonDown("Fire1"))
+                if (IsNotPlayingAttackAnim())
                 {
-                    m_FSM.ChangeState("attack");
-                }
-                else
-                {
-                    m_FSM.ChangeState("idle");
+                    m_FSM.ChangeState(IDLE);
                 }
             }
         }
 
+        private bool IsNotPlayingAttackAnim()
+        {
+            return (!m_Animation.IsPlaying("PuTongGongJi1_JJ") &&
+                        !m_Animation.IsPlaying("PuTongGongJi2_JJ") &&
+                        !m_Animation.IsPlaying("PuTongGongJi3_JJ"));
+        }
 
+        protected override void InitData()
+        {
+            this.HP = 100000;
+            this.Atk = 10;
+            this.AtkDistance = 5;
+        }
+
+        // send message
+        public void AttackByName(string name)
+        {
+            m_IsAutoChasing = false;
+            string hash = name.GetHashCode().ToString();
+            m_EnemyTarget = GameObject.Find(hash);
+            if (m_EnemyTarget == null)
+            {
+                UIMgr.Instance.ShowWarningPanel();
+                return;
+            }
+            m_Target.transform.LookAt(m_EnemyTarget.transform);
+            m_IsAutoChasing = true;
+
+            print(m_EnemyTarget.name);
+        }
+
+        public void CancelAutoChasing()
+        {
+            m_IsAutoChasing = false;
+        }
+
+        public override void ShowDamage(GameEntity attacker)
+        {
+            base.ShowDamage(attacker);
+            //print("ShowDamage !!!!!" + attacker.Atk);
+        }
     }
 }

@@ -6,24 +6,35 @@ namespace Training
 {
     public abstract class GameEntity : MonoBehaviour
     {
-        public long m_ID { get; set; }
+        public long ID { get; set; }
+        public string Name { get; set; }
         protected StateMachine m_FSM;
 
         [SerializeField]
-        private float m_MoveSpeed = 20;
+        protected float m_MoveSpeed = 20;
         [SerializeField]
         private float m_MovingTurnSpeed = 360;
         [SerializeField]
         private float m_StationaryTurnSpeed = 180;
 
-        float m_TurnAmount;
-        float m_ForwardAmount;
+        private float m_TurnAmount;
+        private float m_ForwardAmount;
 
-        protected Animator m_Animator;
-        public Animator Anim
+        //protected Animator m_Animator;
+        //public Animator Anim
+        //{
+        //    get { return m_Animator; }
+        //}
+
+        protected Animation m_Animation;
+        public Animation Anim
         {
-            get { return m_Animator; }
+            get { return m_Animation; }
         }
+
+        public int HP { get; set; }
+        public int Atk { get; set; }
+        protected int AtkDistance { get; set; }
 
         public virtual void Move(Vector3 dir)
         {
@@ -37,9 +48,20 @@ namespace Training
             transform.Translate(dir * Time.deltaTime * m_MoveSpeed);
         }
 
+        public virtual void Attack(GameEntity other)
+        {
+            other.ShowDamage(this);
+        }
+
+        public virtual void ShowDamage(GameEntity attacker)
+        { 
+            
+        }
+
+        protected virtual void InitData() { }
+
         void ApplyExtraTurnRotation()
         {
-            // help the character turn faster (this is in addition to root rotation in the animation)
             float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
             transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
         }

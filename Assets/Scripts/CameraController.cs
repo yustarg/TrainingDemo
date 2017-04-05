@@ -15,6 +15,7 @@ namespace Training
         private Vector3 m_Offset;
         private Vector3 m_LastPosition;
         private Quaternion m_Rotation;
+        private Vector2 m_LastMousePosition;
 
         private float m_TargetHeight;
 
@@ -25,43 +26,83 @@ namespace Training
             m_LastPosition = new Vector3(m_Target.transform.position.x, m_Target.transform.position.y + m_OffsetHeight, m_Target.transform.position.z - m_OffsetDistance);
             m_Offset = new Vector3(0, m_OffsetHeight, - m_OffsetDistance);
             m_Rotation = transform.rotation;
+            m_LastMousePosition = new Vector2();
+        }
+
+        void OnEnable()
+        {
+            EasyTouch.On_Swipe += On_Swipe;
+            EasyTouch.On_PinchIn += On_PinchIn;     //挤入
+            EasyTouch.On_PinchOut += On_PinchOut;   //挤出
+        }
+
+        void OnDisable()
+        {
+            UnsubscribeEvent();
+        }
+
+        void UnsubscribeEvent()
+        {
+            EasyTouch.On_Swipe -= On_Swipe;
+            EasyTouch.On_PinchIn -= On_PinchIn;
+            EasyTouch.On_PinchOut -= On_PinchOut;
+        }
+
+        private void On_Swipe(Gesture gesture)
+        {
+            // the world coordinate from touch for z=5
+            transform.position = m_Target.transform.position + m_Offset;            
+            Vector2 delta = gesture.deltaPosition;
+            transform.RotateAround(m_Target.transform.position, Vector3.up, delta.x * m_RotateSpeed * Time.deltaTime);
+            m_Offset = transform.position - m_Target.transform.position;
+        }
+
+        private void On_PinchIn(Gesture gesture)
+        {
+            transform.position = m_Target.transform.position + m_Offset;
+            if (m_Offset.magnitude > 3)
+                m_Offset -= (transform.position - new Vector3(m_Target.transform.position.x,
+                    m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized * 0.1f;
+        }
+
+        private void On_PinchOut(Gesture gesture)
+        {
+            transform.position = m_Target.transform.position + m_Offset;
+            if (m_Offset.magnitude < 10)
+                m_Offset += (transform.position - new Vector3(m_Target.transform.position.x,
+                    m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized * 0.1f;
         }
 
         void Update()
         {
-            //transform.position = new Vector3(Mathf.Lerp(m_LastPosition.x, m_Target.transform.position.x + m_Offset.x, m_Smoothing * Time.deltaTime),
-            //                            Mathf.Lerp(m_LastPosition.y, m_Target.transform.position.y + m_Offset.y, m_Smoothing * Time.deltaTime),
-            //                            Mathf.Lerp(m_LastPosition.z, m_Target.transform.position.z + m_Offset.z, m_Smoothing * Time.deltaTime));
             transform.position = m_Target.transform.position + m_Offset;
+            /*  鼠标操作
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
-                //transform.Translate((m_Target.transform.position - transform.position) * Time.deltaTime * m_ScrollSpeed, Space.World);
-                transform.Translate(transform.TransformDirection(Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
+                //transform.Translate(transform.TransformDirection(Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
                 if (m_Offset.magnitude > 3)
                     m_Offset -= (transform.position - new Vector3(m_Target.transform.position.x,
                         m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized;
             }
             else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
-                //transform.Translate((transform.position - m_Target.transform.position) * Time.deltaTime * m_ScrollSpeed, Space.World);
-                transform.Translate(transform.TransformDirection(-Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
+                //transform.Translate(transform.TransformDirection(-Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
                 if (m_Offset.magnitude < 10)
                     m_Offset += (transform.position - new Vector3(m_Target.transform.position.x,
                         m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized;
-                //m_Offset = transform.position - m_Target.transform.position;
             }
-            else if (Input.GetKey(KeyCode.Q))
+            else if (Input.mousePosition.x - m_LastMousePosition.x < 0)
+            {
+                transform.RotateAround(m_Target.transform.position, Vector3.up, -m_RotateSpeed * Time.deltaTime);
+                m_Offset = transform.position - m_Target.transform.position;
+            }
+            else if (Input.mousePosition.x - m_LastMousePosition.x > 0)
             {
                 transform.RotateAround(m_Target.transform.position, Vector3.up, m_RotateSpeed * Time.deltaTime);
                 m_Offset = transform.position - m_Target.transform.position;
             }
-            else if (Input.GetKey(KeyCode.E))
-            {
-                transform.RotateAround(m_Target.transform.position, Vector3.up, -m_RotateSpeed * Time.deltaTime);
-                m_Offset = transform.position - m_Target.transform.position; 
-            }
-
-            //transform.position = m_Target.transform.position + m_Offset;
+            m_LastMousePosition = Input.mousePosition;
+            */
         }
 
         void LateUpdate()

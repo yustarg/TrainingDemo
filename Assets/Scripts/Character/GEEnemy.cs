@@ -7,44 +7,75 @@ namespace Training
 {
     public class GEEnemy : GameEntity
     {
-        AnimatorStateInfo m_Stateinfo;
+        private const string IDLE = "idle";
+        private const string RUN = "run";
+        private const string ATTACK = "attack";
+        private const float MAXDISTANCE = 20;
+        private AnimatorStateInfo m_Stateinfo;
+        private GameObject m_Target;
+
         void Start()
         {
-            m_Animator = GetComponentInChildren<Animator>();
+            InitData();
+            m_Target = GameObject.FindGameObjectWithTag("Player");
+            m_Animation = GetComponentInChildren<Animation>();
             m_FSM = new StateMachine();
-            m_FSM.AddState("idle", new Idle(this));
-            m_FSM.AddState("run", new Run(this));
-            m_FSM.AddState("attack", new Attack(this));
-            m_FSM.Init("idle");
+            m_FSM.AddState(IDLE, new EIdle(this, IDLE));
+            m_FSM.AddState(RUN, new ERun(this, RUN));
+            m_FSM.AddState(ATTACK, new EAttack(this, ATTACK));
+            m_FSM.Init(IDLE);
         }
 
         void Update()
         {
-            //float h = CrossPlatformInputManager.GetAxis("Horizontal");
-            //float v = CrossPlatformInputManager.GetAxis("Vertical");
-            //if (h != 0 || v != 0)
-            //{
-            //    m_Stateinfo = m_Animator.GetCurrentAnimatorStateInfo(0);
-            //    if (!m_Stateinfo.IsName("Base Layer.Attack1")
-            //        && !m_Stateinfo.IsName("Base Layer.Attack2")
-            //        && !m_Stateinfo.IsName("Base Layer.Attack3"))
-            //    {
-            //        m_FSM.ChangeState("run");
-            //        object[] param = new object[2] { h, v };
-            //        m_FSM.Excute(param);
-            //    }
-            //}
-            //else
-            //{
-            //    if (Input.GetButtonDown("Fire1"))
-            //    {
-            //        m_FSM.ChangeState("attack");
-            //    }
-            //    else
-            //    {
-            //        m_FSM.ChangeState("idle");
-            //    }
-            //}
+            float distance = Vector3.Distance(transform.position, m_Target.transform.position);
+            if (distance < MAXDISTANCE && distance > AtkDistance)
+            {
+                if (m_FSM.IsInState(IDLE) || m_FSM.IsInState(ATTACK))
+                {
+                    if (!m_Animation.IsPlaying("PuTongGongJi_1") &&
+                        !m_Animation.IsPlaying("PuTongGongJi_2"))
+                        m_FSM.ChangeState(RUN);                
+                }
+
+            }
+            else if (distance <= AtkDistance)
+            {
+                if (!m_FSM.IsInState(ATTACK))
+                {
+                    m_FSM.ChangeState(ATTACK);
+                }
+                transform.LookAt(m_Target.transform);
+                m_FSM.Excute(m_Target);
+            }
+            else
+            {
+                if (!m_FSM.IsInState(IDLE))
+                {
+                    m_FSM.ChangeState(IDLE);
+                }
+            }
+            if (m_FSM.IsInState(RUN))
+            {
+                Vector3 dir = m_Target.transform.position - transform.position;
+                object[] param = new object[2] { dir, m_Target };
+                m_FSM.Excute(param);
+            }
+        }
+
+
+        protected override void InitData()
+        {
+            this.HP = 100000;
+            this.Atk = 8;
+            this.AtkDistance = 5;
+            this.m_MoveSpeed = 3f;
+        }
+
+        public override void ShowDamage(GameEntity attacker)
+        {
+            base.ShowDamage(attacker);
+            print("ShowDamage !!!!!" + attacker.Atk);
         }
     }
 }
