@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 namespace Training
 {
@@ -59,8 +58,8 @@ namespace Training
 
         void Update()
         {
-            float h = CrossPlatformInputManager.GetAxis("Horizontal");
-            float v = CrossPlatformInputManager.GetAxis("Vertical");
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
             if (h != 0 || v != 0)
             {
                 if (IsNotPlayingAttackAnim())

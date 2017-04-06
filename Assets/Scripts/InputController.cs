@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
 namespace Training
 {
@@ -19,8 +18,8 @@ namespace Training
 
         private void Update()
         {
-            float h = CrossPlatformInputManager.GetAxis("Horizontal");
-            float v = CrossPlatformInputManager.GetAxis("Vertical");
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
 
             m_Move = v * Vector3.forward + h * Vector3.right;
             m_Character.Move(m_Move);

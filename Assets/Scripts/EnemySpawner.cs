@@ -37,7 +37,8 @@ namespace Training
             //Quaternion rotation
             for (int i = 0; i < enemyNames.Length; i++)
             {
-                GameObject e = Instantiate(m_EnemyPrefab, transform) as GameObject;
+                GameObject e = Instantiate(m_EnemyPrefab) as GameObject;
+                e.transform.SetParent(transform);
                 e.transform.name = enemyNames[i].GetHashCode().ToString();
                 e.transform.localPosition = new Vector3(Random.RandomRange(-20f, 20f), 0, Random.RandomRange(-5f, 5f));
                 e.transform.LookAt(m_Player.transform);

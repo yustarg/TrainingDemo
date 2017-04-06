@@ -13,16 +13,21 @@ namespace Training
         private Transform m_Head;
         private float m_Distance = 3f;
         private GameEntity m_Entity;
+        private Camera m_MainCam;
 
         void Start()
         {
             m_PbHP.value = 1;
+            m_MainCam = Camera.main;
         }
 
         void LateUpdate()
         {
             if (m_Head == null) return;
-            float ratio = m_Distance / Vector3.Distance(m_Head.position, Camera.main.transform.position);
+            Vector3 dir = m_Entity.transform.position - m_MainCam.transform.position;
+            Vector3 camForward = m_MainCam.transform.forward;
+            if (Vector3.Dot(dir, camForward) < 0) return;
+            float ratio = m_Distance / Vector3.Distance(m_Head.position, m_MainCam.transform.position);
             transform.position = WorldToUI(m_Head.position);
             transform.localScale = Vector3.one * ratio;
         }
