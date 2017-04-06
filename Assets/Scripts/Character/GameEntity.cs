@@ -33,8 +33,11 @@ namespace Training
         }
 
         public int HP { get; set; }
+        public int CurHP { get; set; }
         public int Atk { get; set; }
         protected int AtkDistance { get; set; }
+        protected UIStatusItem m_UIStatus;
+        public float HeadDistance { get; set; }
 
         public virtual void Move(Vector3 dir)
         {
@@ -53,9 +56,11 @@ namespace Training
             other.ShowDamage(this);
         }
 
-        public virtual void ShowDamage(GameEntity attacker)
-        { 
-            
+        public virtual void ShowDamage(GameEntity attacker) { }
+
+        public virtual Transform GetHeadPoint() 
+        {
+            return transform.FindChild("HeadPoint");
         }
 
         protected virtual void InitData() { }

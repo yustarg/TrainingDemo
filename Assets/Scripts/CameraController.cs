@@ -75,7 +75,6 @@ namespace Training
 
         void Update()
         {
-            transform.position = m_Target.transform.position + m_Offset;
             /*  鼠标操作
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
@@ -107,7 +106,8 @@ namespace Training
 
         void LateUpdate()
         {
-            m_LastPosition = transform.position;
+            //m_LastPosition = transform.position;
+            transform.position = m_Target.transform.position + m_Offset;
             transform.LookAt(new Vector3(m_Target.transform.position.x, m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z));
         }
     }

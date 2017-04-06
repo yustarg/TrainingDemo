@@ -24,6 +24,17 @@ namespace Training
             m_FSM.AddState(RUN, new ERun(this, RUN));
             m_FSM.AddState(ATTACK, new EAttack(this, ATTACK));
             m_FSM.Init(IDLE);
+            m_UIStatus = UIMgr.Instance.GenStatusItem(this);
+        }
+
+        void OnEnable()
+        {
+            if (m_UIStatus != null) m_UIStatus.gameObject.SetActive(true); 
+        }
+
+        void OnDisable()
+        {
+            if (m_UIStatus != null) m_UIStatus.gameObject.SetActive(false);            
         }
 
         void Update()
@@ -66,16 +77,24 @@ namespace Training
 
         protected override void InitData()
         {
-            this.HP = 100000;
+            this.HP = 100;
+            this.CurHP = this.HP;
             this.Atk = 8;
             this.AtkDistance = 5;
             this.m_MoveSpeed = 3f;
+            HeadDistance = 10;
         }
 
         public override void ShowDamage(GameEntity attacker)
         {
             base.ShowDamage(attacker);
-            print("ShowDamage !!!!!" + attacker.Atk);
+            this.CurHP -= attacker.Atk;
+            m_UIStatus.UpdateHP(attacker.Atk, (float)this.CurHP / (float)this.HP);
+        }
+
+        public Transform GetHeadPoint()
+        {
+            return transform.FindChild("HeadPoint");
         }
     }
 }

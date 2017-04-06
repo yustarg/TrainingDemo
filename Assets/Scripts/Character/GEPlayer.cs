@@ -21,6 +21,7 @@ namespace Training
         // Use this for initialization
         void Start()
         {
+            this.InitData(); 
             m_Animation = GetComponent<Animation>();
             m_MainCam = GameObject.FindGameObjectWithTag("MainCamera").transform;
             m_Target = GameObject.FindGameObjectWithTag("Player").transform; 
@@ -30,8 +31,7 @@ namespace Training
             m_FSM.AddState(ATTACK, new Attack(this, ATTACK));
             m_FSM.Init(IDLE);
             m_IsFirstInput = true;
-
-            this.InitData();
+            m_UIStatus = UIMgr.Instance.GenStatusItem(this);  
         }
 
         void OnEnable()
@@ -54,17 +54,6 @@ namespace Training
             if (!m_FSM.IsInState(ATTACK))
             {
                 m_FSM.ChangeState(ATTACK);
-                RaycastHit hit;
-                Ray ray = new Ray(transform.position, transform.forward);
-                if (Physics.Raycast(ray, out hit))
-                {
-                    if (hit.transform.tag == "Enemy")
-                    {
-                        GameEntity ge = hit.transform.GetComponent<GameEntity>();
-                        Attack(ge);
-                    }
-                }
-                m_FSM.Excute();
             }
         }
 
@@ -125,9 +114,12 @@ namespace Training
 
         protected override void InitData()
         {
-            this.HP = 100000;
+            this.HP = 100;
+            this.CurHP = this.HP;
             this.Atk = 10;
             this.AtkDistance = 5;
+            HeadDistance = 3;
+            Name = "阿余";
         }
 
         // send message
@@ -143,8 +135,6 @@ namespace Training
             }
             m_Target.transform.LookAt(m_EnemyTarget.transform);
             m_IsAutoChasing = true;
-
-            print(m_EnemyTarget.name);
         }
 
         public void CancelAutoChasing()
@@ -155,6 +145,8 @@ namespace Training
         public override void ShowDamage(GameEntity attacker)
         {
             base.ShowDamage(attacker);
+            this.CurHP -= attacker.Atk;
+            m_UIStatus.UpdateHP(attacker.Atk, (float)this.CurHP / (float)this.HP);
             //print("ShowDamage !!!!!" + attacker.Atk);
         }
     }
