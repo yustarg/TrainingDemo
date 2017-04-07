@@ -87,34 +87,40 @@ namespace Training
         {
             //print("On_PinchIn");
             isPinching = true;
-            if (m_Offset.magnitude > 3)
-            {
-                Vector3 playerPos = new Vector3(m_Target.transform.position.x,
-                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z);
-                m_Offset -= (transform.position - playerPos).normalized * 0.2f;
-                m_RotateZ = -Vector3.Distance(playerPos, transform.position);
-            }
-                
+            ZoomIn(0.2f);                
         }
 
         private void On_PinchOut(Gesture gesture)
         {
             isPinching = true;
-            if (m_Offset.magnitude < 10)
-            {
-                Vector3 playerPos = new Vector3(m_Target.transform.position.x,
-                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z);
-                m_Offset += (transform.position - playerPos).normalized * 0.2f;
-                m_RotateZ = -Vector3.Distance(playerPos, transform.position);
-            }
-                //m_Offset += (transform.position - new Vector3(m_Target.transform.position.x,
-                //    m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized * 0.2f;
+            ZoomOut(0.2f);
         }
 
         private void On_PinchEnd(Gesture gesture)
         {
-            //print("On_PinchEnd");
             isPinching = false;
+        }
+
+        private void ZoomIn(float ratio)
+        {
+            if (m_Offset.magnitude > 3)
+            {
+                Vector3 playerPos = new Vector3(m_Target.transform.position.x,
+                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z);
+                m_Offset -= (transform.position - playerPos).normalized * ratio;
+                m_RotateZ = -Vector3.Distance(playerPos, transform.position);
+            }
+        }
+
+        private void ZoomOut(float ratio)
+        {
+            if (m_Offset.magnitude < 10)
+            {
+                Vector3 playerPos = new Vector3(m_Target.transform.position.x,
+                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z);
+                m_Offset += (transform.position - playerPos).normalized * ratio;
+                m_RotateZ = -Vector3.Distance(playerPos, transform.position);
+            }
         }
 
         void Update()
@@ -122,17 +128,11 @@ namespace Training
             
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
-                //transform.Translate(transform.TransformDirection(Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
-                if (m_Offset.magnitude > 3)
-                    m_Offset -= (transform.position - new Vector3(m_Target.transform.position.x,
-                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized;
+                ZoomIn(1);
             }
             else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
-                //transform.Translate(transform.TransformDirection(-Vector3.forward) * Time.deltaTime * m_ScrollSpeed, Space.World);
-                if (m_Offset.magnitude < 10)
-                    m_Offset += (transform.position - new Vector3(m_Target.transform.position.x,
-                        m_Target.transform.position.y + m_TargetHeight, m_Target.transform.position.z)).normalized;
+                ZoomOut(1);
             }
                 /*  鼠标操作
             else if (Input.mousePosition.x - m_LastMousePosition.x < 0)
