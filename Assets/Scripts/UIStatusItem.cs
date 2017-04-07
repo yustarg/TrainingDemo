@@ -26,7 +26,16 @@ namespace Training
             if (m_Head == null) return;
             Vector3 dir = m_Entity.transform.position - m_MainCam.transform.position;
             Vector3 camForward = m_MainCam.transform.forward;
-            if (Vector3.Dot(dir, camForward) < 0) return;
+            if (Vector3.Dot(dir, camForward) < 0)
+            {
+                m_LName.gameObject.SetActive(false);
+                m_PbHP.gameObject.SetActive(false);
+            }
+            else
+            {
+                m_LName.gameObject.SetActive(true);
+                m_PbHP.gameObject.SetActive(true);
+            }
             float ratio = m_Distance / Vector3.Distance(m_Head.position, m_MainCam.transform.position);
             transform.position = WorldToUI(m_Head.position);
             transform.localScale = Vector3.one * ratio;

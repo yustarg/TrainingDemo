@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.ImageEffects;
 
 namespace Training
 {
@@ -22,6 +23,7 @@ namespace Training
         public UIPanel m_WarningPanel;
         public UIPanel m_StatusPanel;
         public UIButton m_CancelButton;
+        public UIButton m_SwitchMotionBlurButton;
         public UIGrid m_Grid;
 
         void Awake()
@@ -32,6 +34,7 @@ namespace Training
         void Start()
         {
             EventDelegate.Add(m_CancelButton.onClick, OnCancelClick);
+            EventDelegate.Add(m_SwitchMotionBlurButton.onClick, OnSwitchMotionBlurClick);
         }
 
         public void Init(string[] names)
@@ -56,6 +59,12 @@ namespace Training
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             player.SendMessage("CancelAutoChasing");
+        }
+
+        private void OnSwitchMotionBlurClick()
+        {
+            MotionBlur blur = Camera.main.GetComponent<MotionBlur>();
+            blur.enabled = !blur.enabled;
         }
 
         public UIStatusItem GenStatusItem(GameEntity entity)

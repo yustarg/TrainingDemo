@@ -65,11 +65,11 @@ namespace Training
                 if (IsNotPlayingAttackAnim())
                 {
                     m_FSM.ChangeState(RUN);
-                    if (m_IsFirstInput)
-                    {
+                    //if (m_IsFirstInput)
+                    //{
                         m_Dir = m_Target.position - m_MainCam.position;
                         m_Right = Vector3.Cross(Vector3.up, m_Dir);
-                    }
+                    //}
                     m_IsFirstInput = false;
                     object[] param = new object[1] { v * new Vector3(m_Dir.x, 0, m_Dir.z) + h * m_Right };
                     m_FSM.Excute(param);
@@ -96,7 +96,7 @@ namespace Training
             }
             else
             {
-                m_IsFirstInput = true;
+                //m_IsFirstInput = true;
                 if (IsNotPlayingAttackAnim())
                 {
                     m_FSM.ChangeState(IDLE);

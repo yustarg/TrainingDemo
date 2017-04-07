@@ -48,7 +48,8 @@ namespace Training
             m_ForwardAmount = dir.z;
 
             ApplyExtraTurnRotation();
-            transform.Translate(dir * Time.deltaTime * m_MoveSpeed);
+            Rigidbody r = transform.GetComponent<Rigidbody>();
+            transform.Translate(dir * Time.deltaTime * m_MoveSpeed);            
         }
 
         public virtual void Attack(GameEntity other)
