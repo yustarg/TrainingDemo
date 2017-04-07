@@ -26,7 +26,7 @@ namespace Training
         void Start()
         {
             m_Target = GameObject.FindGameObjectWithTag("Player");
-            m_TargetHeight = m_Target.GetComponent<CapsuleCollider>().height;
+            m_TargetHeight = m_Target.GetComponent<GEPlayer>().Height;
             m_Offset = new Vector3(0, m_OffsetHeight, -m_OffsetDistance);
             m_Rotation = transform.rotation;
             m_LastMousePosition = new Vector2();

@@ -37,7 +37,7 @@ namespace Training
         public int Atk { get; set; }
         protected int AtkDistance { get; set; }
         protected UIStatusItem m_UIStatus;
-        public float HeadDistance { get; set; }
+        public float HeadDistance { get; set; }  // ui距离头顶距离
 
         public virtual void Move(Vector3 dir)
         {

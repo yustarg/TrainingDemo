@@ -12,9 +12,12 @@ namespace Training
         {
             int att = Random.Range(1, 4);
             //m_GameEntity.Anim.SetInteger("AttackNum", att);
+            float height = m_GameEntity.GetComponent<GEPlayer>().Height;
             m_GameEntity.Anim.Play("PuTongGongJi" + att.ToString() + "_JJ");
             RaycastHit hit;
-            Ray ray = new Ray(m_GameEntity.transform.position, m_GameEntity.transform.forward);
+            Ray ray = new Ray(new Vector3(m_GameEntity.transform.position.x, m_GameEntity.transform.position.y + height,
+                                        m_GameEntity.transform.position.z), m_GameEntity.transform.forward);
+            //Debug.DrawRay();
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.transform.tag == "Enemy")

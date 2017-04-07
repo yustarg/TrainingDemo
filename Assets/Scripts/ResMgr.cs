@@ -38,7 +38,10 @@ namespace Training
         {
             for (int i = 0; i < m_NeedPreloadAssetsNames.Count; i++)
             {
+#if ASSETBUNDLE
+#else
                 Object res = Resources.Load(m_NeedPreloadAssetsNames[i]);
+#endif
                 m_PreloadAssets.Add(m_NeedPreloadAssetsNames[i], res);
             }
         }

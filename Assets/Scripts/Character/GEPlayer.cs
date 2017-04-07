@@ -6,6 +6,8 @@ namespace Training
 {
     public class GEPlayer : GameEntity
     {
+        public float Height { get; set; }
+        
         private const string IDLE = "idle";
         private const string RUN = "run";
         private const string ATTACK = "attack";
@@ -16,6 +18,11 @@ namespace Training
         private bool m_IsFirstInput;
         private bool m_IsAutoChasing;
         private GameObject m_EnemyTarget;
+
+        void Awake()
+        {
+            Height = GetComponent<CapsuleCollider>().height;        
+        }
 
         // Use this for initialization
         void Start()
@@ -30,7 +37,7 @@ namespace Training
             m_FSM.AddState(ATTACK, new Attack(this, ATTACK));
             m_FSM.Init(IDLE);
             m_IsFirstInput = true;
-            m_UIStatus = UIMgr.Instance.GenStatusItem(this);  
+            m_UIStatus = UIMgr.Instance.GenStatusItem(this);
         }
 
         void OnEnable()
