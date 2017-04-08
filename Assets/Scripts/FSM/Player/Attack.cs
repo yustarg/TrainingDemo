@@ -36,7 +36,7 @@ namespace Training
         public override void OnExit()
         {
             //m_GameEntity.Anim.SetInteger("AttackNum", -1);
-            m_GameEntity.Anim.CrossFade("ZhanLi_TY");
+            //m_GameEntity.Anim.CrossFade("ZhanLi_TY");
 
         }
     }

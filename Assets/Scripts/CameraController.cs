@@ -157,7 +157,8 @@ namespace Training
             Vector3 positon = playerPosition + (cr * Vector3.back * 8);
             //RaycastHit[] hits = Physics.RaycastAll(new Ray(playerPosition, (positon - playerPosition).normalized), 30, LayerMask.NameToLayer("Terrain"));
             RaycastHit hit;
-            bool isHit = Physics.Raycast(new Ray(playerPosition, (positon - playerPosition).normalized), out hit, 30, LayerMask.NameToLayer("Terrain"));
+            LayerMask mask = 1 << LayerMask.NameToLayer("Terrain");
+            bool isHit = Physics.Raycast(new Ray(playerPosition, (positon - playerPosition).normalized), out hit, 30, mask);
             float distance = Vector3.Distance(transform.position, playerPosition) + 0.5f;
             float hitDistance = 0;
             if (isHit)

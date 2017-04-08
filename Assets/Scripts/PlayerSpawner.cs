@@ -10,7 +10,7 @@ namespace Training
 
         public void LoadPlayer()
         {
-            GameObject playerPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/Characters/Player");
+            GameObject playerPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/Characters/Player.prefab");
             m_PlayerGO = Instantiate(playerPrefab) as GameObject;
             m_PlayerGO.transform.SetParent(transform);
             m_PlayerGO.transform.localPosition = new Vector3(0, 0, 0);

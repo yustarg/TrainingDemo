@@ -70,7 +70,8 @@ namespace Training
             m_LDamage.gameObject.SetActive(true);
             TweenPosition tp = m_LDamage.GetComponent<TweenPosition>();
             tp.ResetToBeginning();
-            tp.from = WorldToUI(m_Head.position);
+            tp.from = WorldToUI(new Vector3(m_Head.position.x + Random.Range(-100, 100),
+                                            m_Head.position.y + Random.Range(-200, 10), m_Head.position.z));
             tp.to = new Vector3(tp.from.x + 20, tp.from.y + 20, m_Head.position.z);
             TweenAlpha ta = m_LDamage.GetComponent<TweenAlpha>();
             ta.ResetToBeginning();

@@ -32,7 +32,7 @@ namespace Training
         {
             m_Player = GameObject.FindGameObjectWithTag("Player");
             m_EnemyList = new List<GEEnemy>();
-            m_EnemyPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/Characters/Enemy");
+            m_EnemyPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/Characters/Enemy.prefab");
 
             //Quaternion rotation
             for (int i = 0; i < enemyNames.Length; i++)

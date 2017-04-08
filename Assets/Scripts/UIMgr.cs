@@ -39,7 +39,7 @@ namespace Training
 
         public void Init(string[] names)
         {
-            GameObject enemyItemPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/UI/EnemyItem");
+            GameObject enemyItemPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/UI/EnemyItem.prefab");
             for (int i = 0; i < names.Length; i++)
             {
                 GameObject itemGO = NGUITools.AddChild(m_Grid.gameObject, enemyItemPrefab);
@@ -69,7 +69,7 @@ namespace Training
 
         public UIStatusItem GenStatusItem(GameEntity entity)
         {
-            GameObject statusItemPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/UI/StatusItem");
+            GameObject statusItemPrefab = (GameObject)ResMgr.Instance.GetRes("Prefabs/UI/StatusItem.prefab");
             GameObject itemGO = NGUITools.AddChild(m_StatusPanel.gameObject, statusItemPrefab);
             UIStatusItem item = itemGO.GetComponent<UIStatusItem>();
             item.SetContent(entity);

@@ -12,10 +12,12 @@ namespace Training
         private const float MAXDISTANCE = 20;
         private AnimatorStateInfo m_Stateinfo;
         private GameObject m_Target;
+        private ParticleSystem m_DamageParticle;
 
         void Start()
         {
             InitData();
+            m_DamageParticle = transform.FindChild("Sparks").GetComponent<ParticleSystem>();
             m_Target = GameObject.FindGameObjectWithTag("Player");
             m_Animation = GetComponentInChildren<Animation>();
             m_FSM = new StateMachine();
@@ -89,6 +91,7 @@ namespace Training
             base.ShowDamage(attacker);
             this.CurHP -= attacker.Atk;
             m_UIStatus.UpdateHP(attacker.Atk, (float)this.CurHP / (float)this.HP);
+            m_DamageParticle.Play();
         }
 
         public Transform GetHeadPoint()

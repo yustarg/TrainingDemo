@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 38822574
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: prefabs_characters_enemy.prefab
+      Dependencies: {}
+    Info_1:
+      Name: prefabs_characters_player.prefab
+      Dependencies: {}
+    Info_2:
+      Name: prefabs_ui_enemyitem.prefab
+      Dependencies: {}
+    Info_3:
+      Name: prefabs_ui_statusitem.prefab
+      Dependencies: {}
