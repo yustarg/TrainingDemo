@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Training
 {
@@ -38,6 +39,12 @@ namespace Training
         protected int AtkDistance { get; set; }
         protected UIStatusItem m_UIStatus;
         public float HeadDistance { get; set; }  // ui距离头顶距离
+        protected NavMeshAgent m_Agent;
+        public NavMeshAgent Agent {
+            get {
+                return m_Agent;
+            }
+        }
 
         public virtual void Move(Vector3 dir)
         {

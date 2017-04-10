@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Training
 {
@@ -11,6 +12,7 @@ namespace Training
         private const string IDLE = "idle";
         private const string RUN = "run";
         private const string ATTACK = "attack";
+        private const string AUTO = "auto";
         private Transform m_MainCam;
         private Transform m_Target;
         private Vector3 m_Dir;
@@ -21,7 +23,8 @@ namespace Training
 
         void Awake()
         {
-            Height = GetComponent<CapsuleCollider>().height;        
+            Height = GetComponent<CapsuleCollider>().height;
+            m_Agent = GetComponent<NavMeshAgent>();
         }
 
         // Use this for initialization
@@ -35,6 +38,7 @@ namespace Training
             m_FSM.AddState(IDLE, new Idle(this, IDLE));
             m_FSM.AddState(RUN, new Run(this, RUN));
             m_FSM.AddState(ATTACK, new Attack(this, ATTACK));
+            m_FSM.AddState(AUTO, new AutoChasing(this, AUTO));
             m_FSM.Init(IDLE);
             m_IsFirstInput = true;
             m_UIStatus = UIMgr.Instance.GenStatusItem(this);
@@ -89,16 +93,24 @@ namespace Training
                 {
                     if (IsNotPlayingAttackAnim())
                     {
+                        m_Target.transform.LookAt(m_EnemyTarget.transform);
                         m_FSM.ChangeState(ATTACK);                    
                     }
                     //m_IsAutoChasing = false;
                 }
                 else 
                 {
-                    m_FSM.ChangeState(RUN);
-                    m_Dir = m_EnemyTarget.transform.position - m_Target.position;
-                    object[] param = new object[1] { new Vector3(m_Dir.x, 0, m_Dir.z) };
-                    m_FSM.Excute(param);
+                    //m_FSM.ChangeState(RUN);
+                    if (!m_FSM.IsInState(AUTO))
+                    {
+                        m_FSM.ChangeState(AUTO);                    
+                    }
+                    //Vector3 pos = m_EnemyTarget.transform.position - (m_EnemyTarget.transform.forward * 3);
+                    if(m_Agent.enabled)
+                        m_Agent.SetDestination(m_EnemyTarget.transform.position);  
+                    //m_Dir = m_EnemyTarget.transform.position - m_Target.position;
+                    //object[] param = new object[1] { new Vector3(m_Dir.x, 0, m_Dir.z) };
+                    //m_FSM.Excute(param);
                 }     
             }
             else

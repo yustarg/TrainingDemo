@@ -10,6 +10,7 @@ namespace Training
         public Idle(GameEntity ge, string name) : base(ge, name) { }
         public override void OnEnter()
         {
+            //m_GameEntity.Agent.enabled = false;
             m_GameEntity.Anim.CrossFade("ZhanLi_TY");
         }
 

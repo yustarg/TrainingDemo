@@ -10,6 +10,7 @@ namespace Training
 
         public override void OnEnter()
         {
+            //m_GameEntity.transform.LookAt();
             int att = Random.Range(1, 4);
             //m_GameEntity.Anim.SetInteger("AttackNum", att);
             float height = m_GameEntity.GetComponent<GEPlayer>().Height;

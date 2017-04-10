@@ -70,5 +70,11 @@ namespace Training
             m_PreloadAssets.TryGetValue(path, out res);
             return res;
         }
+
+        public void Unload()
+        {
+            m_PreloadAssets.Clear();
+            Resources.UnloadUnusedAssets();
+        }
     }
 }

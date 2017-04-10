@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Training
 {
@@ -18,6 +19,7 @@ namespace Training
         {
             InitData();
             m_DamageParticle = transform.FindChild("Sparks").GetComponent<ParticleSystem>();
+            m_Agent = GetComponent<NavMeshAgent>();
             m_Target = GameObject.FindGameObjectWithTag("Player");
             m_Animation = GetComponentInChildren<Animation>();
             m_FSM = new StateMachine();
@@ -69,9 +71,11 @@ namespace Training
             }
             if (m_FSM.IsInState(RUN))
             {
-                Vector3 dir = m_Target.transform.position - transform.position;
-                object[] param = new object[2] { dir, m_Target };
-                m_FSM.Excute(param);
+                //Vector3 dir = m_Target.transform.position - transform.position;
+                //object[] param = new object[2] { dir, m_Target };
+                //m_FSM.Excute(param);
+                if (m_Agent.enabled)
+                    m_Agent.SetDestination(m_Target.transform.position);
             }
         }
 
